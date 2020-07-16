@@ -4,10 +4,8 @@
 		_Amp("Amplitude", float) = 0.3
 		_Frq("Frequency", float) = 10
 		_Spd("Speed", float) = 100
-		_o1x("origin1_x", Range(-0.5,0.5)) = 0
-		_o1y("origin1_y", Range(-0.5,0.5)) = 0
-		_o2x("origin2_x", Range(-0.5,0.5)) = 0
-		_o2y("origin2_y", Range(-0.5,0.5)) = 0
+		_Ox("origin_x", Range(-0.5,0.5)) = 0
+		_Oy("origin_y", Range(-0.5,0.5)) = 0
 	}
 		SubShader{
 			Tags { "RenderType" = "Opaque" }
@@ -21,10 +19,8 @@
 			float _Amp;
 			float _Frq;
 			float _Spd;
-			float _o1x;
-			float _o1y;
-			float _o2x;
-			float _o2y;
+			float _Ox;
+			float _Oy;
 
 			struct Input {
 				float2 uv_MainTex;
@@ -52,28 +48,22 @@
 			{
 				UNITY_INITIALIZE_OUTPUT(Input, o);
 
-				float2 c1 = float2(v.vertex.x - _o1x, v.vertex.z - _o1y);
-				WaveData wave_c1 = sin_wave(c1);
-				float amp1 = wave_c1.height;
-				float2 del_amp1 = wave_c1.normal;
+				float2 circle = float2(v.vertex.x - _Ox, v.vertex.z - _Oy);
+				WaveData wave_circle = sin_wave(circle);
+				float amp = wave_circle.height;
+				float2 del_amp = wave_circle.normal;
 
-
-				float2 c2 = float2(v.vertex.x - _o2x, v.vertex.z - _o2y);
-				WaveData wave_c2 = sin_wave(c2);
-				float amp2 = wave_c2.height;
-				float2 del_amp2 = wave_c2.normal;
-
-				v.vertex.xyz = float3(v.vertex.x, v.vertex.y + amp1 + amp2, v.vertex.z);
-				v.normal = normalize(float3(v.normal.x + del_amp1.x + del_amp2.x, v.normal.y, v.normal.z + del_amp1.y + del_amp2.y));
+    			v.vertex.xyz = float3(v.vertex.x, v.vertex.y + amp, v.vertex.z);
+				//v.normal = normalize(float3(v.normal.x + del_amp.x, v.normal.y, v.normal.z + del_amp.y));
 
 				o.customVert = v.vertex.xyz;
 			}
 
 			void surf(Input IN, inout SurfaceOutput o) {
 				fixed4 c = tex2D(_MainTex, IN.uv_MainTex);
-				float temp = (IN.customVert.y + 1);
+				float temp = (IN.customVert.y + 1.0f);
 				//float temp = (IN.customVert.y);
-				o.Albedo = c.rgb + float3(temp - 1 + 0.1, 0.1 , 1 - temp + 0.1);
+				o.Albedo = c.rgb + float3(temp - 1.0f + 0.1f, 0.1f , 1.0f - temp + 0.1f);
 				o.Alpha = c.a;
 			}
 			ENDCG
