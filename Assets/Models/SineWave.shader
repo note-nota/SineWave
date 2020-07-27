@@ -65,8 +65,7 @@
 
 		void surf(Input IN, inout SurfaceOutput o) {
 			fixed4 c = tex2D(_MainTex, IN.uv_MainTex);
-			float temp = (IN.customVert.y + 1.0f);
-			o.Albedo = c.rgb + float3(temp - 1.0f + 0.1f, 0.1f, 1.0f - temp + 0.1f);
+			o.Albedo = c.rgb + float3(IN.customVert.y + 0.1f, 0.1f, -IN.customVert.y + 0.1f);
 			o.Alpha = c.a;
 		}
 		ENDCG
